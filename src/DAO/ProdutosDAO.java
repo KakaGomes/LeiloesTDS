@@ -31,13 +31,26 @@ public class ProdutosDAO {
             System.out.println("Erro ao cadastrar produto: " + e.getMessage());
         }
     }
-    public ArrayList<ProdutosDTO> listarProdutos(){
-        
-        return listagem;
-    }
-    
-    
-    
-        
-}
+     public ArrayList<ProdutosDTO> listarProdutos() {
+        ArrayList<ProdutosDTO> produtos = new ArrayList<>();
+        String sql = "SELECT * FROM produto";
 
+        try (Connection conn = conectaDAO.getConnection(); 
+             PreparedStatement pstmt = conn.prepareStatement(sql); 
+             ResultSet rs = pstmt.executeQuery()) {
+            
+            while (rs.next()) {
+                ProdutosDTO produto = new ProdutosDTO();
+                produto.setId(rs.getInt("id")); // Certifique-se de que a coluna "id" existe
+                produto.setNome(rs.getString("nome"));
+                produto.setValor(rs.getInt("valor"));
+                produto.setStatus(rs.getString("status"));
+                produtos.add(produto);
+            }
+        } catch (SQLException e) {
+            System.err.println("Erro ao listar produtos: " + e.getMessage());
+        }
+        
+        return produtos; // Retorna a lista de produtos
+    }
+}
