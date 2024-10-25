@@ -5,20 +5,34 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 import javax.swing.JOptionPane;
 
-
 public class conectaDAO {
     
-    public Connection connectDB(){
-        Connection conn = null;
-        
-        try {
-        
-            conn = DriverManager.getConnection("jdbc:mysql://localhost/uc11?user=root&password=1234");
-            
-        } catch (SQLException erro){
-            JOptionPane.showMessageDialog(null, "Erro ConectaDAO" + erro.getMessage());
-        }
-        return conn;
+    private static final String URL = "jdbc:mysql://localhost/uc11?useTimezone=true&serverTimezone=America/Sao_Paulo";
+    private static final String USUARIO = "root";
+    private static final String SENHA = "1234";
+
+    public static Connection getConnection() throws SQLException {
+        return DriverManager.getConnection(URL, USUARIO, SENHA);
     }
-    
+
+    public boolean conectar() {
+        try {
+            Connection conn = getConnection();
+            System.out.println("Conexão estabelecida com sucesso.");
+            conn.close(); // Fechar a conexão após o uso
+            return true;
+        } catch (SQLException e) {
+            System.err.println("Erro ao conectar ao banco de dados: " + e.getMessage());
+            return false;
+        }
+    }
+
+    public static void main(String[] args) {
+        conectaDAO connectDB = new conectaDAO();
+        if (connectDB.conectar()) {
+            System.out.println("Conexão bem-sucedida.");
+        } else {
+            System.out.println("Falha na conexão.");
+        }
+    }
 }
