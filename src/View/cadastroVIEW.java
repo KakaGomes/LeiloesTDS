@@ -3,6 +3,10 @@ package View;
 
 import DTO.ProdutosDTO;
 import DAO.ProdutosDAO;
+import java.sql.SQLException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.JOptionPane;
 
 public class cadastroVIEW extends javax.swing.JFrame {
 
@@ -137,17 +141,31 @@ public class cadastroVIEW extends javax.swing.JFrame {
     }//GEN-LAST:event_cadastroNomeActionPerformed
 
     private void btnCadastrarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCadastrarActionPerformed
-        ProdutosDTO produto = new ProdutosDTO();
-        String nome = cadastroNome.getText();
-        String valor = cadastroValor.getText();
-        String status = "A Venda";
-        produto.setNome(nome);
-        produto.setValor(Integer.parseInt(valor));
-        produto.setStatus(status);
-        
-        ProdutosDAO produtodao = new ProdutosDAO();
-        produtodao.cadastrarProduto(produto);
-        
+ProdutosDTO produto = new ProdutosDTO();
+String nome = cadastroNome.getText();
+String valor = cadastroValor.getText();
+String status = "A Venda";
+
+try {
+    produto.setNome(nome);
+    produto.setValor(Integer.parseInt(valor));
+    produto.setStatus(status);
+    
+    ProdutosDAO produtodao = new ProdutosDAO();
+    produtodao.cadastrarProduto(produto);
+    
+    // Se o cadastro estiver correto
+    JOptionPane.showMessageDialog(null, "Produto cadastrado com sucesso!", "Sucesso", JOptionPane.INFORMATION_MESSAGE);
+} catch (SQLException ex) {
+    // Caso ocorra uma exceção durante o cadastro
+    JOptionPane.showMessageDialog(null, "Erro ao cadastrar produto: " + ex.getMessage(), "Erro", JOptionPane.ERROR_MESSAGE);
+} catch (NumberFormatException ex) {
+    // Caso digite valor não inteiro ( valor programado como inteiro )
+    JOptionPane.showMessageDialog(null, "Por favor, insira um valor válido.", "Erro", JOptionPane.WARNING_MESSAGE);
+} catch (Exception ex) {
+    // Erro ao efetuar o cadastro
+    JOptionPane.showMessageDialog(null, "Ocorreu um erro inesperado: " + ex.getMessage(), "Erro", JOptionPane.ERROR_MESSAGE);
+}
     }//GEN-LAST:event_btnCadastrarActionPerformed
 
     private void btnProdutosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnProdutosActionPerformed
