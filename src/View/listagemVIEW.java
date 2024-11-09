@@ -132,10 +132,35 @@ public class listagemVIEW extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnVenderActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnVenderActionPerformed
-        String id = id_produto_venda.getText();
-        
-        ProdutosDAO produtosdao = new ProdutosDAO();
-        
+      // Evento do botão para vender o produto
+String id = id_produto_venda.getText().trim();
+
+if (!id.isEmpty()) {
+    ProdutosDAO produtosdao = new ProdutosDAO();
+
+    // Verifica o status atual do produto
+    String statusAtual = produtosdao.buscarStatusProduto(Integer.parseInt(id));
+
+    if (statusAtual != null) {
+        if (statusAtual.equalsIgnoreCase("vendido")) {
+            JOptionPane.showMessageDialog(null, "O produto já foi vendido.");
+        } else {
+            // Atualiza o status do produto para "vendido"
+            boolean atualizado = produtosdao.venderProduto(Integer.parseInt(id));
+            if (atualizado) {
+                JOptionPane.showMessageDialog(null, "Produto vendido com sucesso.");
+                listarProdutos(); // Atualiza a lista de produtos
+                id_produto_venda.setText(""); // Limpa o campo após a venda
+            } else {
+                JOptionPane.showMessageDialog(null, "Erro ao atualizar o status do produto.");
+            }
+        }
+    } else {
+        JOptionPane.showMessageDialog(null, "Produto não encontrado.");
+    }
+} else {
+    JOptionPane.showMessageDialog(null, "Por favor, insira um ID de produto.");
+}
         //produtosdao.venderProduto(Integer.parseInt(id));
         listarProdutos();
     }//GEN-LAST:event_btnVenderActionPerformed
