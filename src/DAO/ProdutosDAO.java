@@ -33,7 +33,7 @@ public class ProdutosDAO {
     }
      public ArrayList<ProdutosDTO> listarProdutos() {
         ArrayList<ProdutosDTO> produtos = new ArrayList<>();
-        String sql = "SELECT * FROM produto";
+        String sql = "SELECT * FROM produto where status = 'Vendido'";
 
         try (Connection conn = conectaDAO.getConnection(); 
              PreparedStatement pstmt = conn.prepareStatement(sql); 
@@ -53,4 +53,35 @@ public class ProdutosDAO {
         
         return produtos; // Retorna a lista de produtos
     }
+     
+     public String buscarStatusProduto(int id) {
+    String status = null;
+    try (Connection conn = conectaDAO.getConnection(); 
+         PreparedStatement stmt = conn.prepareStatement("SELECT status FROM produto WHERE id = ?")) {
+        stmt.setInt(1, id);
+        ResultSet rs = stmt.executeQuery();
+        if (rs.next()) {
+            status = rs.getString("status");
+        }
+    } catch (SQLException e) {
+        e.printStackTrace();
+    }
+    return status;
+}
+
+public boolean venderProduto(int id) {
+    try (Connection conn = conectaDAO.getConnection(); 
+         PreparedStatement stmt = conn.prepareStatement("UPDATE produto SET status = 'vendido' WHERE id = ?")) {
+        stmt.setInt(1, id);
+        int rowsUpdated = stmt.executeUpdate();
+        return rowsUpdated > 0;
+    } catch (SQLException e) {
+        e.printStackTrace();
+        return false;
+    }
+}
+     
+     
+     
+     
 }
